@@ -146,6 +146,40 @@ class AuthService:
         user = self.get_current_user()
         return user is not None and user.role == "admin"
     
+    def store_user_credentials(self, username: str, password: str):
+        """
+        Store user credentials temporarily in session for API calls
+        Note: Only stores in memory for current session
+        
+        Args:
+            username: Redmine username
+            password: Redmine password
+        """
+        # Store credentials in session state (temporary)
+        st.session_state.redmine_username = username
+        st.session_state.redmine_password = password
+    
+    def get_user_credentials(self) -> Optional[Tuple[str, str]]:
+        """
+        Get stored user credentials from session
+        
+        Returns:
+            Tuple of (username, password) if available, None otherwise
+        """
+        username = st.session_state.get("redmine_username")
+        password = st.session_state.get("redmine_password")
+        
+        if username and password:
+            return username, password
+        return None
+    
+    def clear_user_credentials(self):
+        """Clear stored user credentials from session"""
+        if "redmine_username" in st.session_state:
+            del st.session_state.redmine_username
+        if "redmine_password" in st.session_state:
+            del st.session_state.redmine_password
+    
     def login(self, username: str, password: str) -> Tuple[bool, Optional[str]]:
         """
         Complete login process: authenticate and create session
@@ -169,6 +203,9 @@ class AuthService:
             st.session_state.username = user.username
             st.session_state.user_role = user.role
             
+            # Store credentials for API calls (session only)
+            self.store_user_credentials(username, password)
+            
             return True, None
         
         return False, error
@@ -177,7 +214,8 @@ class AuthService:
         """Clear user session and logout"""
         # Clear all session state related to authentication
         session_keys_to_clear = [
-            "jwt_token", "user_id", "username", "user_role"
+            "jwt_token", "user_id", "username", "user_role",
+            "redmine_username", "redmine_password"  # Clear credentials too
         ]
         
         for key in session_keys_to_clear:

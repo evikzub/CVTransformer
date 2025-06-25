@@ -68,17 +68,44 @@ Features:
 ### F2.1: Redmine API Integration
 Redmine authentication and API connection
 Redmine Projects retrieval
+```python
+# API Endpoints
+# projects
+GET /projects.json → {projects: [{id, name, status}]}
+# issues
+GET /projects/{id}/issues.json?assigned_to_id=me&status_id=open&f[]=created_on&op[created_on]=><&v[created_on][]=start&v[created_on][]=end
+POST /issues.json → Create new issue
+```
 System settings interface (Admin)
 * Default project configuration
 * File size and type restrictions
 * Environment variable management based on the file ".env.example"
+  * Read/write .env file programmatically
+    * the admin interface should validate write permissions to the .env file before attempting changes
+  * Hot-reload using python-dotenv with override
+  * Admin interface for: DEFAULT_PROJECT_ID, MAX_FILE_SIZE_MB, TICKETS_PER_PAGE
+  * TEMP_FILES_PATH and security keys not user-configurable (hide JWT_SECRET_KEY and REDMINE_API_KEY from the admin interface)
 
 ### F2.2: Redmine Tickets Integration
 Redmine Ticket retrieval for default project
 Tickets Interface (User)
 * List and search tickets from the selected Default project 
+  * Default filter: "this week" + assigned to current user + open status
+    * Date Range: For "this week" filter, should be Monday-Sunday
+  * 15 tickets per page with pagination
+  * Real-time search across: id, subject, description
+  * Lazy loading with loading spinners
+  * Display fields: id, subject, status, author, assigned_to, created_on
 * New ticket creation functionality
-Error handling for API failures
+  * Required fields: subject, description
+  * Defaults: tracker=0, status=1, priority=2 (Normal), assigned_to=current_user
+  * Naming convention: {Candidate Name} ({Stack})
+  * Auto-populate description with conversion metadata (name, contacts)
+Error handling for API failures:
+* Block workflow on API failures
+* Toast notifications for connection errors
+* Retry mechanisms with exponential backoff
+* Clear error messages with suggested actions
 
 ## Epic 3: Core Application Foundation
 Description: Establish the basic web application infrastructure and core functionality

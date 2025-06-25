@@ -43,6 +43,10 @@ def show_dashboard():
         # Navigation
         st.markdown("### 🧭 Navigation")
         
+        if st.button("🎫 Tickets", use_container_width=True):
+            st.query_params.page = "tickets"
+            st.rerun()
+        
         if st.button("🔄 CV Converter", use_container_width=True):
             st.query_params.page = "converter"
             st.rerun()
@@ -50,6 +54,10 @@ def show_dashboard():
         if current_user.role == "admin":
             if st.button("👥 User Management", use_container_width=True):
                 st.query_params.page = "admin_users"
+                st.rerun()
+                
+            if st.button("⚙️ Settings", use_container_width=True):
+                st.query_params.page = "admin_settings"
                 st.rerun()
         
         st.markdown("---")

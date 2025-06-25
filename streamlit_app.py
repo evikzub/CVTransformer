@@ -23,6 +23,8 @@ from app.auth.auth_service import AuthService
 from app.pages.login import show_login_page
 from app.pages.dashboard import show_dashboard
 from app.pages.admin_users import show_admin_users
+from app.pages.admin_settings import show_admin_settings
+from app.pages.tickets import show_tickets_page
 from app.utils.helpers import init_session_state_defaults
 
 def main():
@@ -91,6 +93,19 @@ def main():
                     st.info("Redirecting to dashboard...")
                     st.query_params.page = "dashboard"
                     st.rerun()
+            
+            elif page == "admin_settings":
+                # Check admin privileges
+                if current_user.role == "admin":
+                    show_admin_settings()
+                else:
+                    st.error("🚫 Admin access required")
+                    st.info("Redirecting to dashboard...")
+                    st.query_params.page = "dashboard"
+                    st.rerun()
+            
+            elif page == "tickets":
+                show_tickets_page()
             
             elif page == "converter":
                 st.info("🔄 CV Converter page coming soon!")

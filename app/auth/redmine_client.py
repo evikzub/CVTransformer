@@ -278,4 +278,178 @@ class RedmineClient:
             return response.status_code == 200
             
         except requests.exceptions.RequestException:
-            return False 
+            return False
+    
+    def get_user_issues_with_api_key(self, project_id: Optional[str] = None,
+                                    assigned_to_user_id: Optional[int] = None,
+                                    status_filter: str = "open",
+                                    limit: int = 100,
+                                    offset: int = 0,
+                                    search_query: str = "",
+                                    date_filter_params: Optional[Dict] = None) -> Optional[List[Dict[str, Any]]]:
+        """
+        Get issues using API key authentication (admin access)
+        
+        Args:
+            project_id: Optional project ID filter
+            assigned_to_user_id: User ID to filter assignments (use None for all)
+            status_filter: Status filter ("open", "closed", "all")
+            limit: Maximum number of issues to return
+            offset: Offset for pagination
+            search_query: Search query for subject/description
+            date_filter_params: Date filter parameters
+            
+        Returns:
+            List of issue dicts if successful, None if failed
+        """
+        try:
+            api_url = f"{self.base_url}/issues.json"
+            
+            # Build query parameters
+            params = {
+                "limit": limit,
+                "offset": offset,
+                "sort": "updated_on:desc"
+            }
+            
+            # Project filter
+            if project_id:
+                params["project_id"] = project_id
+            elif self.default_project_id:
+                params["project_id"] = self.default_project_id
+            
+            # Assigned to filter
+            if assigned_to_user_id:
+                params["assigned_to_id"] = assigned_to_user_id
+            
+            # Status filter
+            if status_filter == "open":
+                params["status_id"] = "open"
+            elif status_filter == "closed":
+                params["status_id"] = "closed"
+            # "all" means no status filter
+            
+            # Date filter
+            if date_filter_params:
+                params.update(date_filter_params)
+            
+            # Search query (server-side search)
+            if search_query:
+                # Use search parameter for broader search
+                params["search"] = search_query
+            
+            # Use API key authentication
+            headers = {"X-Redmine-API-Key": self.api_key}
+            
+            response = requests.get(
+                api_url,
+                headers=headers,
+                params=params,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data.get("issues", [])
+            else:
+                print(f"API request failed: {response.status_code}")
+                print(f"Response: {response.text}")
+                return None
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Redmine issues error: {e}")
+            return None
+    
+    def create_issue_with_api_key(self, subject: str, description: str,
+                                 project_id: Optional[str] = None,
+                                 assigned_to_user_id: Optional[int] = None) -> Optional[Dict[str, Any]]:
+        """
+        Create a new issue using API key authentication
+        
+        Args:
+            subject: Issue subject
+            description: Issue description
+            project_id: Project ID (uses default if not provided)
+            assigned_to_user_id: User ID to assign to (optional)
+            
+        Returns:
+            Created issue dict if successful, None if failed
+        """
+        try:
+            api_url = f"{self.base_url}/issues.json"
+            
+            # Prepare issue data
+            issue_data = {
+                "issue": {
+                    "project_id": project_id or self.default_project_id,
+                    "subject": subject,
+                    "description": description,
+                    "tracker_id": 1,  # Default tracker
+                    "status_id": 1,   # New
+                    "priority_id": 2, # Normal
+                }
+            }
+            
+            # Add assignment if specified
+            if assigned_to_user_id:
+                issue_data["issue"]["assigned_to_id"] = assigned_to_user_id
+            
+            # Use API key authentication
+            headers = {
+                "X-Redmine-API-Key": self.api_key,
+                "Content-Type": "application/json"
+            }
+            
+            response = requests.post(
+                api_url,
+                headers=headers,
+                json=issue_data,
+                timeout=15
+            )
+            
+            if response.status_code == 201:
+                return response.json()
+            else:
+                print(f"Failed to create issue: {response.status_code}")
+                print(f"Response: {response.text}")
+                return None
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Redmine issue creation error: {e}")
+            return None
+    
+    def get_user_by_login(self, login: str) -> Optional[Dict[str, Any]]:
+        """
+        Get user information by login name using API key
+        
+        Args:
+            login: User login name
+            
+        Returns:
+            User data dict if found, None if not found or error
+        """
+        try:
+            # Search for user by login
+            api_url = f"{self.base_url}/users.json"
+            
+            headers = {"X-Redmine-API-Key": self.api_key}
+            params = {"name": login}
+            
+            response = requests.get(api_url, headers=headers, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                users = data.get("users", [])
+                
+                # Find exact match by login
+                for user in users:
+                    if user.get("login") == login:
+                        return user
+                
+                return None
+            else:
+                return None
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Redmine user lookup error: {e}")
+            return None 
