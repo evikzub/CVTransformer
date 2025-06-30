@@ -1,0 +1,414 @@
+{
+    "issues": [
+      {
+        "id": 36458,
+        "project": {
+          "id": 122,
+          "name": "Software Staff"
+        },
+        "tracker": {
+          "id": 5,
+          "name": "General task"
+        },
+        "status": {
+          "id": 1,
+          "name": "New"
+        },
+        "priority": {
+          "id": 4,
+          "name": "Normal"
+        },
+        "author": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "category": {
+          "id": 361,
+          "name": "Position"
+        },
+        "subject": "Software Engineer (Support and Development Hybrid Role)",
+        "description": "*Location*: Remote\r\n*Work Hours*: 1 PM – 9 PM EST\r\n*Type*: Full-Time, Long-Term Engagement\r\n\r\n\r\n",
+        "start_date": null,
+        "due_date": null,
+        "done_ratio": 0,
+        "is_private": false,
+        "estimated_hours": null,
+        "custom_fields": [
+          {
+            "id": 1,
+            "name": "Identified In",
+            "value": ""
+          }
+        ],
+        "created_on": "2025-05-05T15:18:41Z",
+        "updated_on": "2025-05-07T15:38:36Z",
+        "closed_on": null
+      },
+      {
+        "id": 36460,
+        "project": {
+          "id": 122,
+          "name": "Software Staff"
+        },
+        "tracker": {
+          "id": 9,
+          "name": "Person"
+        },
+        "status": {
+          "id": 1,
+          "name": "New"
+        },
+        "priority": {
+          "id": 4,
+          "name": "Normal"
+        },
+        "author": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "category": {
+          "id": 362,
+          "name": "Candidate"
+        },
+        "parent": {
+          "id": 36458
+        },
+        "subject": "Anton (PHP)",
+        "description": "Description\r\n8+ years\r\n\r\nLinkedIn: https://www.linkedin.com/in/example\r\nE-mail:anton@gmail.com\r\nGeo: Ecuador\r\nEnglish: good\r\n\r\nSalary expectation: $1,000 (gross)\r\n\r\nReady for tech: any day\r\nReady to start: 2 weeks\r\nComputer: is available\r\n\r\nMain skills: PHP (Laravel, Symfony), JavaScript, Vue.js",
+        "start_date": null,
+        "due_date": null,
+        "done_ratio": 0,
+        "is_private": false,
+        "estimated_hours": null,
+        "custom_fields": [
+          {
+            "id": 27,
+            "name": "Seniority Level",
+            "value": "Senior"
+          },
+          {
+            "id": 29,
+            "name": "Role",
+            "value": "Developer"
+          },
+          {
+            "id": 30,
+            "name": "Years of Experience",
+            "value": "8"
+          },
+          {
+            "id": 31,
+            "name": "Interview Date",
+            "value": ""
+          },
+          {
+            "id": 32,
+            "name": "Who reviewed",
+            "value": ""
+          },
+          {
+            "id": 33,
+            "name": "Technologies",
+            "multiple": true,
+            "value": [
+              "PHP"
+            ]
+          },
+          {
+            "id": 34,
+            "name": "Tech Skill",
+            "value": ""
+          },
+          {
+            "id": 35,
+            "name": "Soft Skill ",
+            "value": ""
+          },
+          {
+            "id": 36,
+            "name": "English",
+            "value": ""
+          },
+          {
+            "id": 37,
+            "name": "Planned Load (h/week) ",
+            "value": ""
+          },
+          {
+            "id": 38,
+            "name": "Work Start Date",
+            "value": ""
+          },
+          {
+            "id": 39,
+            "name": "Work End Date",
+            "value": ""
+          }
+        ],
+        "created_on": "2025-05-07T15:38:36Z",
+        "updated_on": "2025-05-07T15:38:36Z",
+        "closed_on": null
+      },
+      {
+        "id": 36298,
+        "project": {
+          "id": 122,
+          "name": "Software Staff"
+        },
+        "tracker": {
+          "id": 5,
+          "name": "General task"
+        },
+        "status": {
+          "id": 1,
+          "name": "New"
+        },
+        "priority": {
+          "id": 4,
+          "name": "Normal"
+        },
+        "author": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "assigned_to": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "subject": "Business Central Developer (Microsoft Dynamics 365)",
+        "description": "Remote, Part-Time | Flexible Schedule | U.S. Time Overlap Required\r\n\r\nRole Overview:\r\n\r\n",
+        "start_date": "2025-03-06",
+        "due_date": null,
+        "done_ratio": 66,
+        "is_private": false,
+        "estimated_hours": null,
+        "custom_fields": [
+          {
+            "id": 1,
+            "name": "Identified In",
+            "value": ""
+          }
+        ],
+        "created_on": "2024-12-10T15:13:48Z",
+        "updated_on": "2025-03-06T11:10:35Z",
+        "closed_on": null
+      },
+      {
+        "id": 36303,
+        "project": {
+          "id": 122,
+          "name": "Software Staff"
+        },
+        "tracker": {
+          "id": 9,
+          "name": "Person"
+        },
+        "status": {
+          "id": 6,
+          "name": "Rejected"
+        },
+        "priority": {
+          "id": 4,
+          "name": "Normal"
+        },
+        "author": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "assigned_to": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "category": {
+          "id": 362,
+          "name": "Candidate"
+        },
+        "parent": {
+          "id": 36298
+        },
+        "subject": "Nikita",
+        "description": "Experience: 10+ yers\r\n\r\nLinkedIn: https://www.linkedin.com/in/nikita\r\nE-mail: nikita@gmail.com\r\nEnglish: good\r\n\r\nSalary expectation: $10/h (gross)\r\nPayment - FOP\r\n\r\nReady for tech: any day\r\nReady to start: 1 week\r\nComputer: +\r\n",
+        "start_date": null,
+        "due_date": null,
+        "done_ratio": 0,
+        "is_private": false,
+        "estimated_hours": null,
+        "custom_fields": [
+          {
+            "id": 27,
+            "name": "Seniority Level",
+            "value": "Senior"
+          },
+          {
+            "id": 29,
+            "name": "Role",
+            "value": "Developer"
+          },
+          {
+            "id": 30,
+            "name": "Years of Experience",
+            "value": "10"
+          },
+          {
+            "id": 31,
+            "name": "Interview Date",
+            "value": "2024-12-20"
+          },
+          {
+            "id": 32,
+            "name": "Who reviewed",
+            "value": ""
+          },
+          {
+            "id": 33,
+            "name": "Technologies",
+            "multiple": true,
+            "value": []
+          },
+          {
+            "id": 34,
+            "name": "Tech Skill",
+            "value": ""
+          },
+          {
+            "id": 35,
+            "name": "Soft Skill ",
+            "value": ""
+          },
+          {
+            "id": 36,
+            "name": "English",
+            "value": ""
+          },
+          {
+            "id": 37,
+            "name": "Planned Load (h/week) ",
+            "value": ""
+          },
+          {
+            "id": 38,
+            "name": "Work Start Date",
+            "value": ""
+          },
+          {
+            "id": 39,
+            "name": "Work End Date",
+            "value": ""
+          }
+        ],
+        "created_on": "2024-12-20T16:10:08Z",
+        "updated_on": "2025-01-06T14:24:22Z",
+        "closed_on": "2025-01-06T14:24:22Z"
+      },
+      {
+        "id": 36311,
+        "project": {
+          "id": 122,
+          "name": "Software Staff"
+        },
+        "tracker": {
+          "id": 9,
+          "name": "Person"
+        },
+        "status": {
+          "id": 6,
+          "name": "Rejected"
+        },
+        "priority": {
+          "id": 4,
+          "name": "Normal"
+        },
+        "author": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "assigned_to": {
+          "id": 541,
+          "name": "John Doe"
+        },
+        "category": {
+          "id": 362,
+          "name": "Candidate"
+        },
+        "parent": {
+          "id": 36298
+        },
+        "subject": "Andrii",
+        "description": "Andrii\r\nNAV/BC Developer\r\nExperience: 3.5 years \r\nOverall experience: 5+ years\r\n\r\nE-mail: andrew@gmail.com\r\nGeo: Prague (CZ)\r\nEnglish: good\r\n\r\nSalary expectation: $10/h (gross)\r\nPayment - FOP\r\n\r\nReady for tech: any day\r\nReady to start: any day\r\nComputer: +\r\n",
+        "start_date": null,
+        "due_date": null,
+        "done_ratio": 0,
+        "is_private": false,
+        "estimated_hours": null,
+        "custom_fields": [
+          {
+            "id": 27,
+            "name": "Seniority Level",
+            "value": "Senior"
+          },
+          {
+            "id": 29,
+            "name": "Role",
+            "value": "Developer"
+          },
+          {
+            "id": 30,
+            "name": "Years of Experience",
+            "value": "5"
+          },
+          {
+            "id": 31,
+            "name": "Interview Date",
+            "value": ""
+          },
+          {
+            "id": 32,
+            "name": "Who reviewed",
+            "value": ""
+          },
+          {
+            "id": 33,
+            "name": "Technologies",
+            "multiple": true,
+            "value": []
+          },
+          {
+            "id": 34,
+            "name": "Tech Skill",
+            "value": ""
+          },
+          {
+            "id": 35,
+            "name": "Soft Skill ",
+            "value": ""
+          },
+          {
+            "id": 36,
+            "name": "English",
+            "value": ""
+          },
+          {
+            "id": 37,
+            "name": "Planned Load (h/week) ",
+            "value": ""
+          },
+          {
+            "id": 38,
+            "name": "Work Start Date",
+            "value": ""
+          },
+          {
+            "id": 39,
+            "name": "Work End Date",
+            "value": ""
+          }
+        ],
+        "created_on": "2025-01-06T14:40:25Z",
+        "updated_on": "2025-03-06T09:34:16Z",
+        "closed_on": "2025-03-06T09:34:16Z"
+      }
+    ],
+    "total_count": 25,
+    "offset": 0,
+    "limit": 5
+  }

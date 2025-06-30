@@ -81,8 +81,28 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
     
     st.markdown("### 📋 Your Tickets")
     
+    # Ticket type legend
+    with st.expander("ℹ️ Ticket Types", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            **💼 Position Tickets (General Task)**
+            - Job openings and position descriptions
+            - Blue background with special highlighting
+            - Actions: View, View Candidates
+            - CV operations not available
+            """)
+        with col2:
+            st.markdown("""
+            **👤 Candidate Tickets (Person)**
+            - Individual candidate profiles
+            - Green background, linked to positions
+            - Actions: View, Attach File, Convert CV
+            - Full CV operations available
+            """)
+    
     # Filters row
-    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+    col1, col2, col3, col4, col5 = st.columns([2, 1, 1, 1, 1])
     
     with col1:
         search_query = st.text_input(
@@ -96,6 +116,26 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
             st.session_state.tickets_page = 1  # Reset to first page on search
     
     with col2:
+        # Initialize ticket type filter if not exists
+        if "tickets_type" not in st.session_state:
+            st.session_state.tickets_type = "all"
+        
+        type_filter = st.selectbox(
+            "🎯 Type",
+            options=["all", "positions", "candidates"],
+            format_func=lambda x: {
+                "all": "All Types",
+                "positions": "💼 Positions",
+                "candidates": "👤 Candidates"
+            }[x],
+            index=["all", "positions", "candidates"].index(st.session_state.tickets_type),
+            key="type_filter"
+        )
+        if type_filter != st.session_state.tickets_type:
+            st.session_state.tickets_type = type_filter
+            st.session_state.tickets_page = 1
+    
+    with col3:
         date_filter = st.selectbox(
             "📅 Date Range",
             options=["this_week", "last_week", "this_month", "last_month", "all"],
@@ -113,7 +153,7 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
             st.session_state.tickets_filter = date_filter
             st.session_state.tickets_page = 1
     
-    with col3:
+    with col4:
         status_filter = st.selectbox(
             "📊 Status",
             options=["open", "closed", "all"],
@@ -125,7 +165,7 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
             st.session_state.tickets_status = status_filter
             st.session_state.tickets_page = 1
     
-    with col4:
+    with col5:
         if st.button("🔄 Refresh", use_container_width=True):
             st.rerun()
     
@@ -184,12 +224,37 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
         st.markdown("- Contact administrator if API key is misconfigured")
         return
     
+    # Apply client-side type filtering
+    if st.session_state.tickets_type != "all":
+        if st.session_state.tickets_type == "positions":
+            tickets = [t for t in tickets if t.tracker_name.lower() == "general task"]
+        elif st.session_state.tickets_type == "candidates":
+            tickets = [t for t in tickets if t.tracker_name.lower() == "person"]
+    
     # Display results summary
     if tickets:
-        results_text = f"Showing {len(tickets)} of {total_count} tickets"
+        results_text = f"Showing {len(tickets)} tickets"
+        if st.session_state.tickets_type != "all":
+            type_label = "positions" if st.session_state.tickets_type == "positions" else "candidates"
+            results_text += f" ({type_label} only)"
         if st.session_state.tickets_search:
             results_text += f" matching '{st.session_state.tickets_search}'"
         st.markdown(f"**{results_text}**")
+        
+        # Show type distribution
+        if st.session_state.tickets_type == "all":
+            all_tickets = tickets  # Before filtering was applied
+            position_count = len([t for t in all_tickets if t.tracker_name.lower() == "general task"])
+            candidate_count = len([t for t in all_tickets if t.tracker_name.lower() == "person"])
+            other_count = len(all_tickets) - position_count - candidate_count
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("💼 Positions", position_count)
+            with col2:
+                st.metric("👤 Candidates", candidate_count)
+            with col3:
+                st.metric("📋 Other", other_count)
     else:
         st.info("No tickets found matching your criteria.")
         return
@@ -207,19 +272,89 @@ def show_ticket_list(auth_service: AuthService, ticket_manager: TicketManager, c
         show_pagination_controls(total_count, ticket_manager.tickets_per_page, "bottom")
 
 def display_ticket_card(ticket: Ticket):
-    """Display a single ticket card"""
+    """Display a single ticket card with different styling for positions vs candidates"""
+    
+    # Determine ticket type based on tracker
+    is_position = ticket.tracker_name.lower() == "general task"
+    is_candidate = ticket.tracker_name.lower() == "person"
+    
+    # Set styling based on ticket type
+    if is_position:
+        # Position tickets - highlighted background
+        card_style = """
+        <div style="
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-left: 5px solid #4a90e2;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(74, 144, 226, 0.1);
+        ">
+        """
+        ticket_icon = "💼"
+        ticket_type_label = "Position"
+        card_color = "#4a90e2"
+    elif is_candidate:
+        # Candidate tickets - subtle background
+        card_style = """
+        <div style="
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #28a745;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
+        ">
+        """
+        ticket_icon = "👤"
+        ticket_type_label = "Candidate"
+        card_color = "#28a745"
+    else:
+        # Other ticket types - default styling
+        card_style = """
+        <div style="
+            background: #ffffff;
+            border-left: 5px solid #6c757d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        ">
+        """
+        ticket_icon = "📋"
+        ticket_type_label = ticket.tracker_name
+        card_color = "#6c757d"
+    
+    # Display the styled card
+    st.markdown(card_style, unsafe_allow_html=True)
+    
     with st.container():
-        # Ticket header
-        col1, col2, col3 = st.columns([3, 1, 1])
+        # Ticket header with type indicator
+        col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
         
         with col1:
-            st.markdown(f"### #{ticket.id}: {ticket.subject}")
+            st.markdown(f"### {ticket_icon} #{ticket.id}: {ticket.subject}")
         
         with col2:
+            st.markdown(f"""
+            <div style="
+                background-color: {card_color};
+                color: white;
+                padding: 0.25rem 0.5rem;
+                border-radius: 12px;
+                text-align: center;
+                font-size: 0.8rem;
+                font-weight: bold;
+            ">
+                {ticket_type_label}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
             status_color = "🟢" if ticket.status_name.lower() in ["new", "open"] else "🔴"
             st.markdown(f"**Status:** {status_color} {ticket.status_name}")
         
-        with col3:
+        with col4:
             priority_icon = "🔥" if ticket.priority_name.lower() == "high" else "📝"
             st.markdown(f"**Priority:** {priority_icon} {ticket.priority_name}")
         
@@ -237,32 +372,76 @@ def display_ticket_card(ticket: Ticket):
             st.write(f"**Author:** {ticket.author_name}")
             if ticket.assigned_to_name:
                 st.write(f"**Assigned:** {ticket.assigned_to_name}")
-            # st.write(f"**Created:** {format_datetime(ticket.created_on)}")
-            # st.write(f"**Updated:** {format_datetime(ticket.updated_on)}")
+            st.write(f"**Tracker:** {ticket.tracker_name}")
             st.write(f"**Created:** {ticket.created_on}")
             st.write(f"**Updated:** {ticket.updated_on}")
         
-        # Action buttons
-        col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+        # Action buttons - conditional based on ticket type
+        if is_position:
+            # Position tickets - limited actions
+            col1, col2, col3 = st.columns([1, 1, 2])
+            
+            with col1:
+                if st.button("👁️ View Position", key=f"view_{ticket.id}"):
+                    st.session_state.selected_ticket = ticket.id
+                    show_info_message(f"Selected position #{ticket.id}")
+            
+            with col2:
+                if st.button("👥 View Candidates", key=f"candidates_{ticket.id}"):
+                    st.session_state.parent_ticket_filter = ticket.id
+                    show_info_message(f"Filtering candidates for position #{ticket.id}")
+            
+            with col3:
+                st.info("💼 Position ticket - CV operations not available")
         
-        with col1:
-            if st.button("👁️ View", key=f"view_{ticket.id}"):
-                st.session_state.selected_ticket = ticket.id
-                show_info_message(f"Selected ticket #{ticket.id}")
+        elif is_candidate:
+            # Candidate tickets - full actions available
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+            
+            with col1:
+                if st.button("👁️ View", key=f"view_{ticket.id}"):
+                    st.session_state.selected_ticket = ticket.id
+                    show_info_message(f"Selected candidate #{ticket.id}")
+            
+            with col2:
+                if st.button("📎 Attach File", key=f"attach_{ticket.id}"):
+                    st.session_state.attach_to_ticket = ticket.id
+                    show_info_message("File attachment feature coming soon!")
+            
+            with col3:
+                if st.button("🔄 Convert CV", key=f"convert_{ticket.id}"):
+                    st.session_state.convert_ticket = ticket.id
+                    st.query_params.page = "converter"
+                    st.query_params.ticket_id = str(ticket.id)
+                    st.rerun()
+            
+            with col4:
+                st.success("👤 Candidate - CV operations available")
         
-        with col2:
-            if st.button("📎 Attach File", key=f"attach_{ticket.id}"):
-                st.session_state.attach_to_ticket = ticket.id
-                show_info_message("File attachment feature coming soon!")
-        
-        with col3:
-            if st.button("🔄 Convert CV", key=f"convert_{ticket.id}"):
-                st.session_state.convert_ticket = ticket.id
-                st.query_params.page = "converter"
-                st.query_params.ticket_id = str(ticket.id)
-                st.rerun()
-        
-        st.divider()
+        else:
+            # Other ticket types - default actions
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+            
+            with col1:
+                if st.button("👁️ View", key=f"view_{ticket.id}"):
+                    st.session_state.selected_ticket = ticket.id
+                    show_info_message(f"Selected ticket #{ticket.id}")
+            
+            with col2:
+                if st.button("📎 Attach File", key=f"attach_{ticket.id}"):
+                    st.session_state.attach_to_ticket = ticket.id
+                    show_info_message("File attachment feature coming soon!")
+            
+            with col3:
+                if st.button("🔄 Convert CV", key=f"convert_{ticket.id}"):
+                    st.session_state.convert_ticket = ticket.id
+                    st.query_params.page = "converter"
+                    st.query_params.ticket_id = str(ticket.id)
+                    st.rerun()
+    
+    # Close the styled div
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.divider()
 
 def show_pagination_controls(total_count: int, per_page: int, position: str):
     """Display pagination controls"""
