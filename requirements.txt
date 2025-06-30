@@ -5,3 +5,4 @@ requests>=2.31.0
 sqlite3-utils>=3.34
 passlib>=1.7.4
 bcrypt>=4.0.1
+pytest
